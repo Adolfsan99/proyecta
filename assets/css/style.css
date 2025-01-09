@@ -1,0 +1,81 @@
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Raleway", sans-serif;
+}
+
+body:not(.logged-in) {
+  background: linear-gradient(
+    -90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(192, 192, 192, 1) 100%
+  );
+}
+
+body.logged-in {
+  background: linear-gradient(
+    -90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(192, 192, 192, 1) 100%
+  );
+}
+
+#app {
+  flex: 1;
+  color: #000000;
+}
+
+footer {
+  margin-top: auto;
+}
+
+.bg-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(192, 192, 192, 1) 100%
+  ) !important;
+}
+
+.modal-content {
+  background: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-blue {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white !important;
+}
+
+.btn-green {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white !important;
+}
+
+.btn-red {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white !important;
+}
+
+.create-project-card {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+}

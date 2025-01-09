@@ -1,0 +1,199 @@
+<html>
+
+<head>
+  <base href=".">
+  <title>💡Proyecta</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vuex@4/dist/vuex.global.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&amp;display=swap"
+    rel="stylesheet">
+  <style>
+
+  </style>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body class="bg-gray-100">
+  <div id="app">
+    <!-- Navegación -->
+    <nav class="text-black p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex flex-col">
+          <h1 class="text-2xl font-bold">&#x1f4a1;Proyecta</h1>
+          <span class="text-sm">Sistema de Gesti&#xf3;n de Proyectos</span>
+        </div>
+        <div v-if="!usuarioActual">
+          <button @click="mostrarFormularioLogin = true" class="btn-blue px-4 py-2 rounded mr-2">Iniciar
+            Sesi&#xf3;n</button>
+          <button @click="mostrarFormularioRegistro = true" class="btn-green px-4 py-2 rounded">Registrarse</button>
+        </div>
+        <div v-else>
+          <span class="mr-4">Bienvenido, <strong>{{ usuarioActual.nombre }}</strong></span>
+          <button @click="cerrarSesion" class="btn-red px-4 py-2 rounded">Cerrar Sesi&#xf3;n</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container mx-auto p-4">
+      <!-- Modal de Login -->
+      <div v-if="mostrarFormularioLogin" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="modal-content p-8 rounded-lg w-96">
+          <h2 class="text-2xl font-bold mb-4">Iniciar Sesi&#xf3;n</h2>
+          <form @submit.prevent="iniciarSesion">
+            <input v-model="formularioLogin.email" type="email" placeholder="Correo electr&#xf3;nico"
+              class="w-full p-2 mb-4 border rounded" required>
+            <input v-model="formularioLogin.contrasena" type="password" placeholder="Contrase&#xf1;a"
+              class="w-full p-2 mb-4 border rounded" required>
+            <select v-model="formularioLogin.empresaId" class="w-full p-2 mb-4 border rounded">
+              <option value>Ingreso sin empresa</option>
+              <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
+                {{ empresa.nombre }}
+              </option>
+            </select>
+            <button type="submit" class="w-full btn-blue text-white p-2 rounded">Iniciar Sesi&#xf3;n</button>
+          </form>
+          <button @click="mostrarFormularioLogin = false" class="mt-4 text-gray-600">Cerrar</button>
+        </div>
+      </div>
+
+      <!-- Modal de Registro -->
+      <div v-if="mostrarFormularioRegistro"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="modal-content p-8 rounded-lg w-96">
+          <h2 class="text-2xl font-bold mb-4">Registrarse</h2>
+          <form @submit.prevent="registrar">
+            <input v-model="formularioRegistro.nombre" type="text" placeholder="Nombre"
+              class="w-full p-2 mb-4 border rounded" required>
+            <input v-model="formularioRegistro.email" type="email" placeholder="Correo electr&#xf3;nico"
+              class="w-full p-2 mb-4 border rounded" required>
+            <input v-model="formularioRegistro.contrasena" type="password" placeholder="Contrase&#xf1;a"
+              class="w-full p-2 mb-4 border rounded" required>
+            <select v-model="formularioRegistro.empresaId" class="w-full p-2 mb-4 border rounded" required>
+              <option value>Selecciona una empresa</option>
+              <option value="null">Registrarse sin empresa</option>
+              <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
+                {{ empresa.nombre }}
+              </option>
+            </select>
+            <button type="submit" class="w-full btn-green text-white p-2 rounded">Registrarse</button>
+          </form>
+          <button @click="mostrarFormularioRegistro = false" class="mt-4 text-gray-600">Cerrar</button>
+        </div>
+      </div>
+
+      <!-- Contenido principal -->
+      <div v-if="!usuarioActual" class="container mx-auto p-4 text-center text-black">
+        <img src="/assets/img/welcome.png" class="mx-auto w-80 h-80" viewBox="0 0 100 100">
+        </img>
+        <h2 class="text-2xl font-bold mt-4">&#xa1;Bienvenido al Sistema de Gesti&#xf3;n de Proyectos!</h2>
+        <p class="mt-2">Por favor inicia sesi&#xf3;n o reg&#xed;strate para comenzar.</p>
+      </div>
+      <div v-else>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div v-for="proyecto in proyectosUsuario" :key="proyecto.id" class="bg-card p-4 rounded-lg shadow relative">
+            <button @click="eliminarProyecto(proyecto.id)"
+              class="absolute top-2 right-2 text-red-500 hover:text-red-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+            <h2 class="text-xl font-bold mb-2 flex items-center">
+              {{ proyecto.nombre }}
+              <button @click="editarProyecto(proyecto)" class="ml-2 text-orange-500 hover:text-orange-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+            </h2>
+            <div class="mb-4">
+              <h3 class="font-bold">Historias de Usuario</h3>
+              <div v-for="historia in proyecto.historiasUsuario" :key="historia.id"
+                class="mt-2 border-l-4 border-blue-500 pl-2">
+                <div class="flex justify-between items-center">
+                  <h4 class="font-semibold flex items-center">
+                    {{ historia.titulo }}
+                    <button @click="editarHistoria(proyecto.id, historia)"
+                      class="ml-2 text-orange-500 hover:text-orange-700">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                  </h4>
+                  <button @click="eliminarHistoria(proyecto.id, historia.id)" class="text-red-500 hover:text-red-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="ml-4">
+                  <div v-for="ticket in historia.tickets" :key="ticket.id"
+                    class="mt-1 flex justify-between items-center">
+                    <div class="flex-grow">
+                      <span :class="{
+                        &apos;text-red-600&apos;: ticket.estado === &apos;Activo&apos;,
+                        &apos;text-orange-600&apos;: ticket.estado === &apos;En Proceso&apos;, 
+                        &apos;text-green-600&apos;: ticket.estado === &apos;Finalizado&apos;
+                      }" class="flex items-center">
+                        {{ ticket.titulo }}
+                        <button @click="editarTicket(proyecto.id, historia.id, ticket)"
+                          class="ml-2 text-orange-500 hover:text-orange-700">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                          </svg>
+                        </button>
+                      </span>
+                      <select v-model="ticket.estado" class="ml-2 text-sm border rounded">
+                        <option>Activo</option>
+                        <option>En Proceso</option>
+                        <option>Finalizado</option>
+                      </select>
+                    </div>
+                    <button @click="eliminarTicket(proyecto.id, historia.id, ticket.id)"
+                      class="text-red-500 hover:text-red-700 ml-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <button @click="crearTicket(historia.id)" class="text-sm btn-blue text-white px-2 py-1 rounded mt-2">
+                  Agregar Ticket
+                </button>
+              </div>
+            </div>
+            <button @click="crearHistoriaUsuario(proyecto.id)" class="btn-green text-white px-4 py-2 rounded">
+              Crear Historia de Usuario
+            </button>
+          </div>
+          <div v-if="puedeCrearProyectos" @click="crearProyecto"
+            class="create-project-card p-4 rounded-lg shadow cursor-pointer flex flex-col items-center justify-center text-white">
+            <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokelinecap="round" strokelinejoin="round" strokewidth="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span class="mt-2 font-semibold">Crear proyecto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="bg-gray-800 text-white p-4 mt-8">
+    <div class="container mx-auto text-center">
+      <p>Sistema de Gesti&#xf3;n de Proyectos 2024</p>
+      <p>Desarrollado por <a href="https://github.com/adolfsan99" class="text-blue-400 hover:text-blue-300">Adolfo
+          Sánchez Lopéz</a></p>
+    </div>
+  </footer>
+
+  <script src="/assets/js/core.js"></script>
+
+</body>
+
+</html>
