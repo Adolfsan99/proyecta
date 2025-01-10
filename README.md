@@ -52,7 +52,11 @@ El proyecto es una plataforma de gestión de proyectos, **historia de usuario** 
 - **Validaciones**:
   - **Validar email** y **validar contraseña** (que debe cumplir con ciertos requisitos de seguridad).
 - **Estilo Dinámico para estados de tickets**:
+
   - Se ajustan los estilos de los tickets dependiendo de su estado (Activo, Finalizado, En Proceso) con colores específicos.
+
+- **Restablecimiento de datos**:
+  - Es posible volver a los datos por defecto de la aplicación iniciando sesión y creando un proyecto con el nombre "resetdata"
 
 ### 2. **Interacciones con el Usuario:**
 
