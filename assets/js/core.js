@@ -484,6 +484,12 @@ const app = createApp({
                 estado: "Activo",
                 comentarios: [],
               });
+              setTimeout(() => {
+                const selects = document.querySelectorAll("select");
+                const newSelect = selects[selects.length - 1];
+                newSelect.style.backgroundColor = "#dc2626";
+                newSelect.style.color = "white";
+              }, 50);
             }
           });
         });
@@ -626,6 +632,7 @@ const app = createApp({
           }
         }
         tienda.commit("actualizarEstado");
+        window.location.reload();
       }
     };
     const puedeCrearProyectos = computed(() => {
@@ -661,6 +668,49 @@ const app = createApp({
         tienda.commit("actualizarEstado");
       }
     };
+    const actualizarEstadoEstilo = (event) => {
+      const select = event.target;
+      const opcion = select.value;
+      switch (opcion) {
+        case "Activo":
+          select.style.backgroundColor = "#dc2626";
+          select.style.color = "white";
+          break;
+        case "Finalizado":
+          select.style.backgroundColor = "#059669";
+          select.style.color = "white";
+          break;
+        case "En Proceso":
+          select.style.backgroundColor = "#ff8c00";
+          select.style.color = "white";
+          break;
+        default:
+          select.style.backgroundColor = "white";
+          select.style.color = "black";
+      }
+    };
+    const setInitialTicketStyles = () => {
+      setTimeout(() => {
+        document.querySelectorAll("select").forEach((select) => {
+          const estado = select.value;
+          switch (estado) {
+            case "Activo":
+              select.style.backgroundColor = "#dc2626";
+              select.style.color = "white";
+              break;
+            case "En Proceso":
+              select.style.backgroundColor = "#ff8c00";
+              select.style.color = "white";
+              break;
+            case "Finalizado":
+              select.style.backgroundColor = "#059669";
+              select.style.color = "white";
+              break;
+          }
+        });
+      }, 100);
+    };
+    setInitialTicketStyles();
     return {
       mostrarFormularioLogin,
       mostrarFormularioRegistro,
@@ -686,6 +736,7 @@ const app = createApp({
       editarProyecto,
       editarHistoria,
       editarTicket,
+      actualizarEstadoEstilo,
     };
   },
 });

@@ -2,35 +2,36 @@
 
 <head>
   <base href=".">
-  <title>💡Proyecta</title>
+  <title>Proyecta</title>
+  <link rel="icon" href="/assets/img/favicon.png" type="image/x-icon">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://unpkg.com/vuex@4/dist/vuex.global.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&amp;display=swap"
     rel="stylesheet">
-  <style>
 
-  </style>
   <link rel="stylesheet" href="/assets/css/style.css">
+
 </head>
 
 <body class="bg-gray-100">
+
   <div id="app">
     <!-- Navegación -->
     <nav class="text-black p-4">
       <div class="container mx-auto flex justify-between items-center">
         <div class="flex flex-col">
-          <h1 class="text-2xl font-bold">&#x1f4a1;Proyecta</h1>
-          <span class="text-sm">Sistema de Gesti&#xf3;n de Proyectos</span>
+          <h1 class="text-2xl font-bold">💡Proyecta</h1>
+          <span class="text-sm">Sistema de gestión de proyectos</span>
         </div>
         <div v-if="!usuarioActual">
           <button @click="mostrarFormularioLogin = true" class="btn-blue px-4 py-2 rounded mr-2">Iniciar
-            Sesi&#xf3;n</button>
+            Sesión</button>
           <button @click="mostrarFormularioRegistro = true" class="btn-green px-4 py-2 rounded">Registrarse</button>
         </div>
         <div v-else>
           <span class="mr-4">Bienvenido, <strong>{{ usuarioActual.nombre }}</strong></span>
-          <button @click="cerrarSesion" class="btn-red px-4 py-2 rounded">Cerrar Sesi&#xf3;n</button>
+          <button @click="cerrarSesion" class="btn-red px-4 py-2 rounded">Cerrar Sesión</button>
         </div>
       </div>
     </nav>
@@ -40,9 +41,9 @@
       <!-- Modal de Login -->
       <div v-if="mostrarFormularioLogin" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="modal-content p-8 rounded-lg w-96">
-          <h2 class="text-2xl font-bold mb-4">Iniciar Sesi&#xf3;n</h2>
+          <h2 class="text-2xl font-bold mb-4">Iniciar Sesión</h2>
           <form @submit.prevent="iniciarSesion">
-            <input v-model="formularioLogin.email" type="email" placeholder="Correo electr&#xf3;nico"
+            <input v-model="formularioLogin.email" type="email" placeholder="Correo electrónico"
               class="w-full p-2 mb-4 border rounded" required>
             <input v-model="formularioLogin.contrasena" type="password" placeholder="Contrase&#xf1;a"
               class="w-full p-2 mb-4 border rounded" required>
@@ -52,7 +53,7 @@
                 {{ empresa.nombre }}
               </option>
             </select>
-            <button type="submit" class="w-full btn-blue text-white p-2 rounded">Iniciar Sesi&#xf3;n</button>
+            <button type="submit" class="w-full btn-blue text-white p-2 rounded">Iniciar Sesión</button>
           </form>
           <button @click="mostrarFormularioLogin = false" class="mt-4 text-gray-600">Cerrar</button>
         </div>
@@ -66,7 +67,7 @@
           <form @submit.prevent="registrar">
             <input v-model="formularioRegistro.nombre" type="text" placeholder="Nombre"
               class="w-full p-2 mb-4 border rounded" required>
-            <input v-model="formularioRegistro.email" type="email" placeholder="Correo electr&#xf3;nico"
+            <input v-model="formularioRegistro.email" type="email" placeholder="Correo electrónico"
               class="w-full p-2 mb-4 border rounded" required>
             <input v-model="formularioRegistro.contrasena" type="password" placeholder="Contrase&#xf1;a"
               class="w-full p-2 mb-4 border rounded" required>
@@ -85,29 +86,47 @@
 
       <!-- Contenido principal -->
       <div v-if="!usuarioActual" class="container mx-auto p-4 text-center text-black">
-        <img src="/assets/img/welcome.png" class="mx-auto w-80 h-80" viewBox="0 0 100 100">
+        <img src="/assets/img/home-ui.png" class="mx-auto w-80 h-80" viewBox="0 0 100 100">
         </img>
-        <h2 class="text-2xl font-bold mt-4">&#xa1;Bienvenido al Sistema de Gesti&#xf3;n de Proyectos!</h2>
-        <p class="mt-2">Por favor inicia sesi&#xf3;n o reg&#xed;strate para comenzar.</p>
+        <h2 class="text-2xl font-bold mt-4">¡Bienvenido a 💡Proyecta!</h2>
+        <p class="mt-2">Tu solución practica para la gestión de proyectos, inicia sesión o
+          regístrate para comenzar.</p>
       </div>
       <div v-else>
+        <div class="flex items-center mb-4">
+          <h2 class="text-2xl font-bold">Proyectos</h2>
+          <button v-if="puedeCrearProyectos" @click="crearProyecto" class="btn-create" title="Crear proyecto">
+
+            <!--Icono de crear-->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+
+          </button>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div v-for="proyecto in proyectosUsuario" :key="proyecto.id" class="bg-card p-4 rounded-lg shadow relative">
             <button @click="eliminarProyecto(proyecto.id)"
               class="absolute top-2 right-2 text-red-500 hover:text-red-700">
+
+              <!--Icono de eliminar-->
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
+
             </button>
             <h2 class="text-xl font-bold mb-2 flex items-center">
-              {{ proyecto.nombre }}
-              <button @click="editarProyecto(proyecto)" class="ml-2 text-orange-500 hover:text-orange-700">
+              <button @click="editarProyecto(proyecto)" class="mr-2 text-orange-500 hover:text-orange-700">
+
+                <!--Icono de editar-->
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
+
               </button>
+              {{ proyecto.nombre }}
             </h2>
             <div class="mb-4">
               <h3 class="font-bold">Historias de Usuario</h3>
@@ -115,20 +134,26 @@
                 class="mt-2 border-l-4 border-blue-500 pl-2">
                 <div class="flex justify-between items-center">
                   <h4 class="font-semibold flex items-center">
-                    {{ historia.titulo }}
                     <button @click="editarHistoria(proyecto.id, historia)"
-                      class="ml-2 text-orange-500 hover:text-orange-700">
+                      class="mr-2 text-orange-500 hover:text-orange-700">
+
+                      <!--Icono de editar-->
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
                           d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                       </svg>
+
                     </button>
+                    {{ historia.titulo }}
                   </h4>
                   <button @click="eliminarHistoria(proyecto.id, historia.id)" class="text-red-500 hover:text-red-700">
+
+                    <!--Icono de eliminar-->
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
+
                   </button>
                 </div>
                 <div class="ml-4">
@@ -140,16 +165,20 @@
                         &apos;text-orange-600&apos;: ticket.estado === &apos;En Proceso&apos;, 
                         &apos;text-green-600&apos;: ticket.estado === &apos;Finalizado&apos;
                       }" class="flex items-center">
-                        {{ ticket.titulo }}
                         <button @click="editarTicket(proyecto.id, historia.id, ticket)"
-                          class="ml-2 text-orange-500 hover:text-orange-700">
+                          class="mr-2 text-orange-500 hover:text-orange-700">
+
+                          <!--Icono de editar-->
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
                               d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                           </svg>
+
                         </button>
+                        {{ ticket.titulo }}
                       </span>
-                      <select v-model="ticket.estado" class="ml-2 text-sm border rounded">
+                      <select v-model="ticket.estado" class="ml-2 text-sm border rounded"
+                        @change="actualizarEstadoEstilo(&#x24;event)" :key="ticket.id">
                         <option>Activo</option>
                         <option>En Proceso</option>
                         <option>Finalizado</option>
@@ -157,10 +186,13 @@
                     </div>
                     <button @click="eliminarTicket(proyecto.id, historia.id, ticket.id)"
                       class="text-red-500 hover:text-red-700 ml-2">
+
+                      <!--Icono de eliminar-->
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokelinecap="round" strokelinejoin="round" strokewidth="2"
                           d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
+
                     </button>
                   </div>
                 </div>
@@ -173,22 +205,15 @@
               Crear Historia de Usuario
             </button>
           </div>
-          <div v-if="puedeCrearProyectos" @click="crearProyecto"
-            class="create-project-card p-4 rounded-lg shadow cursor-pointer flex flex-col items-center justify-center text-white">
-            <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokelinecap="round" strokelinejoin="round" strokewidth="2" d="M12 4v16m8-8H4" />
-            </svg>
-            <span class="mt-2 font-semibold">Crear proyecto</span>
-          </div>
         </div>
       </div>
     </div>
   </div>
   <footer class="bg-gray-800 text-white p-4 mt-8">
     <div class="container mx-auto text-center">
-      <p>Sistema de Gesti&#xf3;n de Proyectos 2024</p>
-      <p>Desarrollado por <a href="https://github.com/adolfsan99" class="text-blue-400 hover:text-blue-300">Adolfo
-          Sánchez Lopéz</a></p>
+      <p>Todos los derechos reservados &#xa9; Proyecta 2024</p>
+      <p>Sistema de gestión de proyectos desarrollado por <a href="https://github.com/adolfsan99"
+          class="text-green-400 hover:text-blue-300">Adolfo Sánchez Lopéz</a></p>
     </div>
   </footer>
 
